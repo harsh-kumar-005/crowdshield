@@ -42,8 +42,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         const newPoint = {
           time: new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
           total: data.totalCrowd,
+          risk: data.riskScore ?? 0,
         };
-        return [...prev, newPoint].slice(-15);
+        return [...prev, newPoint].slice(-20);
       });
     });
 
