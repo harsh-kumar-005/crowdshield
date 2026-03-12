@@ -1,0 +1,6 @@
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore personal study notes - not for GitHub
+docs/
