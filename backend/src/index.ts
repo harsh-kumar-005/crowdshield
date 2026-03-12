@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import apiRoutes from './routes/apiRoutes';
+import mlRoutes from './routes/mlRoutes';
 import { query } from './config/db';
 import { createServer } from 'http';
 import { setupWebSocket } from './websocket';
@@ -17,7 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api', apiRoutes); // Mount event and venue routes
+app.use('/api', apiRoutes);
+app.use('/api/ml', mlRoutes); // ML Engine bridge routes
 
 // Initialize WebSocket server
 setupWebSocket(httpServer);
