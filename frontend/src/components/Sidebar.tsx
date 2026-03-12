@@ -1,12 +1,12 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Calendar, Settings, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Map, Calendar, ScanEye, Settings, LogOut, ShieldAlert } from 'lucide-react';
 
 const Sidebar = () => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Map View', path: '/map', icon: <Map size={20} /> },
     { name: 'Events', path: '/events', icon: <Calendar size={20} /> },
+    { name: 'AI Detection', path: '/detection', icon: <ScanEye size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
 
