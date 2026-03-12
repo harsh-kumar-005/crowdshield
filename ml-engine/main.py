@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import density, detection, risk
+from routers import density, detection, risk, simulation
 
 app = FastAPI(
     title="CrowdShield ML Engine",
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(density.router)
 app.include_router(detection.router)
 app.include_router(risk.router)
+app.include_router(simulation.router)
 
 
 @app.get("/")
@@ -32,6 +33,8 @@ async def root():
             "density_analysis": "POST /density/analyze",
             "person_detection": "POST /detection/count",
             "risk_prediction": "POST /risk/predict",
+            "simulation_scenarios": "GET /simulation/scenarios",
+            "simulation_run": "POST /simulation/run",
             "interactive_docs": "GET /docs",
         }
     }
