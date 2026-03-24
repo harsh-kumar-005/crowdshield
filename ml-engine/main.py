@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import density, detection, risk, simulation
+from routers import density, detection, risk, simulation, live_feed
 
 app = FastAPI(
     title="CrowdShield ML Engine",
@@ -22,6 +22,7 @@ app.include_router(density.router)
 app.include_router(detection.router)
 app.include_router(risk.router)
 app.include_router(simulation.router)
+app.include_router(live_feed.router)
 
 
 @app.get("/")
