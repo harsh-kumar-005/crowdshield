@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Users, AlertTriangle, ShieldCheck, DoorOpen, BrainCircuit } from 'lucide-react';
+import { Users, AlertTriangle, ShieldCheck, DoorOpen, BrainCircuit, CloudRain, Sun, Camera, Radio } from 'lucide-react';
 import { useSocketData } from '../context/SocketContext';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -26,6 +26,8 @@ const Dashboard = () => {
   const riskLevel = crowdData?.riskLevel ?? 'loading';
   const riskColor = crowdData?.riskColor ?? '#64748b';
   const densityPct = crowdData?.densityPct ?? 0;
+  const weather = crowdData?.weather;
+  const dataSource = crowdData?.dataSource ?? 'simulated';
 
   return (
     <div className="space-y-6">
@@ -35,9 +37,21 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-slate-900">Live Command Center</h1>
           <p className="text-sm text-slate-500 mt-1">Real-time crowd monitoring — ML risk updated every 4 seconds</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Data source badge */}
+          <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-semibold ${dataSource === 'camera' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+            {dataSource === 'camera' ? <><Camera size={12} /> Live Camera</> : <><Radio size={12} /> Simulated</>}
+          </div>
+          {/* Weather */}
+          {weather && (
+            <div className="flex items-center gap-1.5 text-xs bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full font-semibold">
+              {weather.is_raining ? <CloudRain size={12} /> : <Sun size={12} />}
+              {weather.temp_c}°C · {weather.condition}
+              {weather.is_raining && <span className="text-red-500 ml-1">↑ Risk</span>}
+            </div>
+          )}
           <div className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></div>
-          <span className="text-sm font-medium text-slate-600">{isConnected ? 'System Live' : 'Disconnected'}</span>
+          <span className="text-sm font-medium text-slate-600">{isConnected ? 'Live' : 'Offline'}</span>
         </div>
       </div>
 
