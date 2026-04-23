@@ -4,3 +4,6 @@ Thumbs.db
 
 # Ignore personal study notes - not for GitHub
 docs/
+
+# Ignore ML model weights
+*.pt
