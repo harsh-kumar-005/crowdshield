@@ -1,0 +1,69 @@
+services:
+  # ── PostgreSQL Database ──
+  - type: pserv
+    name: crowdshield-db
+    env: postgres
+    plan: free
+    databaseName: crowdshield
+    user: postgres
+
+  # ── Node.js Backend API ──
+  - type: web
+    name: crowdshield-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: crowdshield-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: crowdshield-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: crowdshield-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: crowdshield-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: crowdshield-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+
+  # ── Python ML Engine ──
+  - type: web
+    name: crowdshield-ml
+    env: python
+    plan: free
+    rootDir: ml-engine
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+  # ── React Frontend ──
+  - type: web
+    name: crowdshield-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: crowdshield-backend
+          property: url
+      - key: VITE_ML_URL
+        fromService:
+          type: web
+          name: crowdshield-ml
+          property: url
