@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Map, Calendar, ScanEye, MonitorPlay, FlaskConical, Settings, LogOut, ShieldAlert } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Map View', path: '/map', icon: <Map size={20} /> },
@@ -21,7 +24,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.name}
@@ -42,7 +45,10 @@ const Sidebar = () => {
 
       {/* User Area / Logout */}
       <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center gap-3 px-4 py-3 w-full text-left text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+        <button 
+          onClick={logout}
+          className="flex items-center gap-3 px-4 py-3 w-full text-left text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
+        >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
         </button>

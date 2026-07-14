@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/db.ts","./src/controllers/authcontroller.ts","./src/controllers/eventcontroller.ts","./src/controllers/venuecontroller.ts","./src/routes/apiroutes.ts","./src/routes/authroutes.ts","./src/routes/mlroutes.ts","./src/services/alertservice.ts","./src/websocket/index.ts"],"version":"5.9.3"}

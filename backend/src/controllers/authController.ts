@@ -40,10 +40,20 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
 
+        // Hardcoded admin for demo purposes
+        if (email === 'admin' && password === 'admin123') {
+            const token = jwt.sign({ id: 0, role: 'admin' }, JWT_SECRET, { expiresIn: '1d' });
+            res.json({
+                user: { id: 0, name: 'Admin', email: 'admin', role: 'admin' },
+                token,
+            });
+            return;
+        }
+
         // Find user
         const userResult = await query('SELECT * FROM users WHERE email = $1', [email]);
         if (userResult.rows.length === 0) {
-            res.status(400).json({ message: 'Invalid credentials' });
+            res.status(400).json({ error: 'Invalid credentials' });
             return;
         }
 

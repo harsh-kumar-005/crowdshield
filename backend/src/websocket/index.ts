@@ -10,6 +10,10 @@ let cameraPersonCount: number | null = null;   // null = no camera active
 let lastCameraTimestamp = 0;
 const CAMERA_STALE_MS = 10_000; // after 10s of no frames, camera is "offline"
 
+// ─── Shared state: smooth simulation ─────────────────────────────────────────
+let simulatedCrowd = 12000;
+let crowdTrend = 1; // 1 for growing, -1 for shrinking
+
 // ─── Helper: call Python ML risk predictor ───────────────────────────────────
 async function getRiskScore(
   totalCrowd: number,
@@ -160,7 +164,15 @@ export const setupWebSocket = (server: HttpServer) => {
         totalCrowd = cameraPersonCount! * 1000;  // 5 people → 5,000
         source = 'camera';
       } else {
-        totalCrowd = 10000 + Math.floor(Math.random() * 5000);
+        // Smooth random walk simulation
+        if (Math.random() > 0.95) crowdTrend *= -1; // Occasionally reverse trend
+        const delta = Math.floor(Math.random() * 300) * crowdTrend;
+        simulatedCrowd += delta;
+        // Keep within reasonable bounds
+        if (simulatedCrowd < 5000) simulatedCrowd = 5000;
+        if (simulatedCrowd > VENUE_CAPACITY * 0.9) simulatedCrowd = VENUE_CAPACITY * 0.9;
+        
+        totalCrowd = simulatedCrowd;
         source = 'simulated';
       }
 
@@ -168,7 +180,7 @@ export const setupWebSocket = (server: HttpServer) => {
         id: `Gate ${i + 1}`,
         count: cameraActive
           ? Math.floor((cameraPersonCount! * 250) + Math.random() * 50) // Spread across gates
-          : Math.floor(Math.random() * 500) + 100,
+          : Math.floor(totalCrowd / 4) + Math.floor(Math.random() * 100 - 50),
       }));
 
       // Get real weather (cached)
