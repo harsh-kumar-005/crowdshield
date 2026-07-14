@@ -1,12 +1,10 @@
-services:
-  # ── PostgreSQL Database ──
-  - type: pserv
-    name: crowdshield-db
-    env: postgres
+databases:
+  - name: crowdshield-db
     plan: free
     databaseName: crowdshield
     user: postgres
 
+services:
   # ── Node.js Backend API ──
   - type: web
     name: crowdshield-backend
