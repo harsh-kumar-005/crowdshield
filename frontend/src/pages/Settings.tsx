@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Bell, Smartphone, Save, CheckCircle2 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}` : 'http://localhost:5000';
+
 const Settings = () => {
   const [phone, setPhone] = useState('');
   const [threshold, setThreshold] = useState(80);
@@ -11,7 +13,7 @@ const Settings = () => {
 
   // Load settings on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/settings')
+    fetch(`${API_URL}/api/settings`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data) {
@@ -23,7 +25,7 @@ const Settings = () => {
       .catch(() => {});
 
     // Check ML engine status
-    fetch('http://localhost:5000/api/ml/status')
+    fetch(`${API_URL}/api/ml/status`)
       .then(r => r.json())
       .then(d => setMlStatus(d.ml_engine || 'offline'))
       .catch(() => setMlStatus('offline'));
@@ -33,7 +35,7 @@ const Settings = () => {
     setSaving(true);
     setSaved(false);
     try {
-      await fetch('http://localhost:5000/api/settings', {
+      await fetch(`${API_URL}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Calendar, MapPin, Plus, X, Loader2 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}` : 'http://localhost:5000';
+
 interface Event {
   id: number;
   name: string;
@@ -31,7 +33,7 @@ const Events = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/events');
+      const res = await fetch(`${API_URL}/api/events`);
       if (res.ok) setEvents(await res.json());
     } catch {
       // fallback to empty
@@ -42,7 +44,7 @@ const Events = () => {
 
   const fetchVenues = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/venues');
+      const res = await fetch(`${API_URL}/api/venues`);
       if (res.ok) setVenues(await res.json());
     } catch { /* ignore */ }
   };
@@ -58,7 +60,7 @@ const Events = () => {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/events', {
+      const res = await fetch(`${API_URL}/api/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

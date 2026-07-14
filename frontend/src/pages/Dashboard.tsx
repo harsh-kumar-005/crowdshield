@@ -6,13 +6,15 @@ import {
   ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend
 } from 'recharts';
 
+const API_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}` : 'http://localhost:5000';
+
 const Dashboard = () => {
   const { isConnected, crowdData, alerts, historicalData } = useSocketData();
   const [dbHistory, setDbHistory] = useState<any[]>([]);
 
   // Load historical data from DB on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/crowd-history')
+    fetch(`${API_URL}/api/crowd-history`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setDbHistory(data.map((d: any) => ({
         time: new Date(d.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),

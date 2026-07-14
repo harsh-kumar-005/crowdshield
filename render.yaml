@@ -1,8 +1,6 @@
 databases:
   - name: crowdshield-db
     plan: free
-    databaseName: crowdshield
-    user: postgres
 
 services:
   # ── Node.js Backend API ──
@@ -55,13 +53,13 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:
-      - key: VITE_API_URL
+      - key: VITE_API_HOST
         fromService:
           type: web
           name: crowdshield-backend
-          property: url
-      - key: VITE_ML_URL
+          property: host
+      - key: VITE_ML_HOST
         fromService:
           type: web
           name: crowdshield-ml
-          property: url
+          property: host
