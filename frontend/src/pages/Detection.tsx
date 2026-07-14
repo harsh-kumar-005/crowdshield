@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { ScanEye, Upload, X, Loader2, Users, CheckCircle2 } from 'lucide-react';
 
-const ML_ENGINE_URL = import.meta.env.VITE_ML_HOST ? `https://${import.meta.env.VITE_ML_HOST}` : 'http://localhost:8000';
+const ML_ENGINE_URL = import.meta.env.VITE_ML_HOST ? `https://${import.meta.env.VITE_ML_HOST}${import.meta.env.VITE_ML_HOST.includes('.onrender.com') ? '' : '.onrender.com'}` : 'http://localhost:8000';
 
 const Detection = () => {
   const [dragOver, setDragOver] = useState(false);

@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
 import { query } from '../config/db';
 
-const ML_ENGINE_URL = 'http://localhost:8000';
+const ML_ENGINE_URL = process.env.ML_ENGINE_HOST ? `http://${process.env.ML_ENGINE_HOST}:10000` : 'http://localhost:8000';
 const VENUE_CAPACITY = 40000;
 
 // ─── Shared state: camera-sourced crowd count ────────────────────────────────
@@ -78,8 +78,8 @@ async function trySendAlert(riskScore: number, totalCrowd: number) {
 
   lastAlertSentAt = now;
   try {
-    // Call our own alert endpoint (uses Twilio if configured)
-    await fetch('http://localhost:5000/api/alerts/send', {
+    const port = process.env.PORT || 5000;
+    await fetch(`http://localhost:${port}/api/alerts/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ risk_score: riskScore, total_crowd: totalCrowd, venue_capacity: VENUE_CAPACITY }),

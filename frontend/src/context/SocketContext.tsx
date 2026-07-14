@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}` : 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}${import.meta.env.VITE_API_HOST.includes('.onrender.com') ? '' : '.onrender.com'}` : 'http://localhost:5000';
 
 // Define the shape of what we share
 interface SocketContextType {

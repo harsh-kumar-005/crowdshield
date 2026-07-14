@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { FlaskConical, Play, Pause, RotateCcw, Zap, Users, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-const ML_URL = import.meta.env.VITE_ML_HOST ? `https://${import.meta.env.VITE_ML_HOST}` : 'http://localhost:8000';
+const ML_URL = import.meta.env.VITE_ML_HOST ? `https://${import.meta.env.VITE_ML_HOST}${import.meta.env.VITE_ML_HOST.includes('.onrender.com') ? '' : '.onrender.com'}` : 'http://localhost:8000';
 
 // Venue to canvas scale: venue is 60x40m, canvas is ~720x480px
 const SCALE = 12;

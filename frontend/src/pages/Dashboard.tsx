@@ -6,7 +6,7 @@ import {
   ResponsiveContainer, BarChart, Bar, LineChart, Line, Legend
 } from 'recharts';
 
-const API_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}` : 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_HOST ? `https://${import.meta.env.VITE_API_HOST}${import.meta.env.VITE_API_HOST.includes('.onrender.com') ? '' : '.onrender.com'}` : 'http://localhost:5000';
 
 const Dashboard = () => {
   const { isConnected, crowdData, alerts, historicalData } = useSocketData();
