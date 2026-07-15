@@ -2,7 +2,11 @@ import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
 import { query } from '../config/db';
 
-const ML_ENGINE_URL = process.env.ML_ENGINE_HOST ? `http://${process.env.ML_ENGINE_HOST}:10000` : 'http://localhost:8000';
+const ML_ENGINE_URL = process.env.ML_ENGINE_HOST 
+  ? (process.env.ML_ENGINE_HOST.includes('.onrender.com') 
+      ? `https://${process.env.ML_ENGINE_HOST}` 
+      : `http://${process.env.ML_ENGINE_HOST}:10000`)
+  : 'http://localhost:8000';
 const VENUE_CAPACITY = 40000;
 
 // ─── Shared state: camera-sourced crowd count ────────────────────────────────
