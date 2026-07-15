@@ -1,11 +1,8 @@
 import { Router, Request, Response } from 'express';
 
 const router = Router();
-const ML_ENGINE_URL = process.env.ML_ENGINE_HOST 
-  ? (process.env.ML_ENGINE_HOST.includes('.onrender.com') 
-      ? `https://${process.env.ML_ENGINE_HOST}` 
-      : `http://${process.env.ML_ENGINE_HOST}:10000`)
-  : 'http://localhost:8000';
+// Emergency hardcode for demo reliability
+const ML_ENGINE_URL = 'https://crowdshield-ml-g59l.onrender.com';
 
 // Helper to forward requests to the Python ML engine
 async function callMLEngine(endpoint: string, body: object): Promise<any> {

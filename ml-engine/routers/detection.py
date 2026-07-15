@@ -49,11 +49,11 @@ async def count_people(file: UploadFile = File(...)):
             conf_pct = 90.0
             confidences.append(conf_pct)
             
-            # Draw rectangle
-            cv2.rectangle(annotated_img, (x, y), (x + w_box, y + h_box), (0, 255, 0), 2)
+            # Draw rectangle (cast to int to prevent cv2 crashes)
+            cv2.rectangle(annotated_img, (int(x), int(y)), (int(x) + int(w_box), int(y) + int(h_box)), (0, 255, 0), 2)
             # Draw label
             label = f"{conf_pct}%"
-            cv2.putText(annotated_img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.putText(annotated_img, label, (int(x), int(y) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         avg_confidence = 90.0 if person_count > 0 else 0
 

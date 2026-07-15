@@ -56,11 +56,11 @@ async def analyze_frame(req: FrameRequest):
             # We don't have true confidence for Haar, so we fake it around 85-95%
             conf = 0.90 
             
-            # Normalize to 0-1
-            nx1 = x / w2
-            ny1 = y / h2
-            nw = w_box / w2
-            nh = h_box / h2
+            # Normalize to 0-1 and cast to float to prevent numpy serialization errors in JSON
+            nx1 = float(x) / w2
+            ny1 = float(y) / h2
+            nw = float(w_box) / w2
+            nh = float(h_box) / h2
             
             boxes.append({
                 "x": round(nx1, 4),
