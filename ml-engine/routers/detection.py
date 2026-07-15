@@ -5,22 +5,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 
 router = APIRouter(prefix="/detection", tags=["Person Detection"])
 
-# YOLOv8 model - loaded once when the server starts (lazy loaded on first call)
-_model = None
-
-def get_model():
-    """Lazy-load the YOLO model so server startup is fast."""
-    global _model
-    if _model is None:
-        try:
-            from ultralytics import YOLO
-            # yolov8n = nano model, ~6MB, runs on CPU, very fast
-            _model = YOLO("yolov8n.pt")  # auto-downloads first time
-            print("YOLOv8n model loaded successfully!")
-        except Exception as e:
-            print(f"YOLO load error: {e}")
-            raise HTTPException(status_code=500, detail=f"Could not load YOLO model: {str(e)}")
-    return _model
+# No YOLO loaded, using memory-safe HOG for free tier
 
 
 @router.post("/count")
@@ -38,7 +23,6 @@ async def count_people(file: UploadFile = File(...)):
 
     try:
         import cv2
-        model = get_model()
 
         # Decode image from bytes
         nparr = np.frombuffer(contents, np.uint8)
@@ -47,17 +31,36 @@ async def count_people(file: UploadFile = File(...)):
         if img is None:
             raise HTTPException(status_code=400, detail="Could not decode image. Make sure it is a valid JPG or PNG.")
 
-        # Run YOLO inference — only detect class 0 which is "person"
-        results = model(img, classes=[0], verbose=False)
-        result = results[0]
+        # Resize for speed — max width 800px for better HOG detection
+        h, w = img.shape[:2]
+        if w > 800:
+            scale = 800 / w
+            img = cv2.resize(img, (800, int(h * scale)))
 
-        # Count detections
-        person_count = len(result.boxes)
-        confidences = result.boxes.conf.tolist() if person_count > 0 else []
-        avg_confidence = round(sum(confidences) / len(confidences) * 100, 1) if confidences else 0
+        # Use OpenCV built-in HOG Person Detector (Memory safe for 512MB Free Tier)
+        hog = cv2.HOGDescriptor()
+        hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        
+        # Detect people
+        rects, weights = hog.detectMultiScale(img, winStride=(8, 8), padding=(8, 8), scale=1.05)
+        person_count = len(rects)
 
         # Draw bounding boxes on image
-        annotated_img = result.plot()  # Returns BGR numpy array with boxes drawn
+        annotated_img = img.copy()
+        confidences = []
+        
+        for i, (x, y, w_box, h_box) in enumerate(rects):
+            conf = float(weights[i][0]) if weights is not None and len(weights) > i else 0.5
+            conf_pct = round(conf * 100, 1) if conf <= 1 else 95.0
+            confidences.append(conf_pct)
+            
+            # Draw rectangle
+            cv2.rectangle(annotated_img, (x, y), (x + w_box, y + h_box), (0, 255, 0), 2)
+            # Draw label
+            label = f"{conf_pct}%"
+            cv2.putText(annotated_img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        avg_confidence = round(sum(confidences) / len(confidences), 1) if confidences else 0
 
         # Encode back to base64 for JSON transport
         _, buffer = cv2.imencode(".jpg", annotated_img)

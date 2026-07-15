@@ -150,7 +150,7 @@ const LiveFeed = () => {
           Live Camera Feed
         </h1>
         <p className="text-slate-500 text-sm mt-1">
-          Connect your webcam — YOLOv8 counts people in real-time and feeds the count into the dashboard pipeline
+          Connect your webcam — The AI Vision Engine counts people in real-time and feeds the count into the dashboard pipeline
         </p>
       </div>
 
@@ -183,7 +183,7 @@ const LiveFeed = () => {
             )}
             {cameraActive && processing && (
               <div className="absolute top-3 right-3 bg-emerald-500/90 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse flex items-center gap-1.5">
-                <Zap size={12} /> YOLO processing…
+                <Zap size={12} /> AI processing…
               </div>
             )}
             {cameraActive && !processing && personCount > 0 && (
@@ -224,7 +224,7 @@ const LiveFeed = () => {
             <strong>How it works:</strong> Your browser captures a webcam frame every 3 seconds →
             sends it via WebSocket to the Node.js backend →
             the backend forwards it to the Python ML engine →
-            YOLOv8 counts every person in the frame →
+            The AI Vision Engine counts every person in the frame →
             that count replaces the simulated numbers on the Dashboard.
           </div>
         </div>
@@ -255,7 +255,7 @@ const LiveFeed = () => {
               {[
                 ['WebSocket', isConnected],
                 ['Camera', cameraActive],
-                ['YOLO Model', isConnected],
+                ['Vision Model', isConnected],
               ].map(([name, ok]) => (
                 <div key={name as string} className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">{name as string}</span>
